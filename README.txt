@@ -15,7 +15,7 @@ support and rely on a common protocol (GSS) for the purpose of...
 
 ...in terms of the appropriateness of that method for a biological organism -- according to certain measurement heuristics.
 
-Eash of these tools is simple to understand and free for all to use, modify, and improve.
+Each of these tools is simple to understand and free for all to use, modify, and improve.
 
 
 Appropriateness...
