@@ -3,19 +3,19 @@ Global Survival Systems
 made of various, independently developed applications which 
 support and rely on a common protocol (GSS) for the purpose of...
 
- -Calculates whether a complete manifest of needs can be satisfied by the 'available' resources -- illustrating how a community is likely to thrive or suffer.
+ -Calculating whether a complete manifest of needs can be satisfied by the 'available' resources -- illustrating how a community is likely to thrive or suffer.
 
- -Suggests alternate means of satisfying a more essential need, when shortages occur; for example, by substituting an alternate source of a nutrient.
+ -Suggesting alternate means of satisfying a more essential need, when shortages occur; for example, by substituting an alternate source of a nutrient.
 
- -Attempts to provide a means of evacuation, if needs are not likely to be met
+ -Attempting to provide a means of evacuation, if needs are not likely to be met
 
- -Analyzes physical locations
+ -Analyzing physical locations in terms of geology, biology, and human social measures
 
- -Provides methods for transitioning from one location to another
+ -Providing methods for transitioning from one location to another
 
 ...in terms of the appropriateness of that method for a biological organism -- according to certain measurement heuristics.
 
-This tool is simple to understand and free for all to use, modify, and improve.
+Eash of these tools is simple to understand and free for all to use, modify, and improve.
 
 
 Appropriateness...
@@ -24,8 +24,8 @@ Appropriateness...
 
   -at a specific time,
 
-  -for a specific organism (human, animal, or plant),
+  -for a specific organism (human[man,woman,boy,girl], animal, or plant),
 
 ...may be calculated in terms of its needs.
 
-The development of this tool is equivalent to a planetary constitution that can logically grant all beings equal rights to existence.
+The development of this protocol and tool suite is equivalent to a planetary constitution that can logically grant all beings equal rights to existence.
