@@ -1,5 +1,5 @@
 Global Survival Systems 
-(as originally from automenta/gss) is a composite model,
+(as originally derived from automenta/gss) is a composite model,
 made of various, independently developed applications which 
 support and rely on a common protocol (GSS) for the purpose of...
 
