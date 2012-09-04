@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<!--?xml version="1.0"?-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg"><head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
+    </head>
+    <body>
+        <h1>Hello World!</h1>
+
+<script type="text/javascript">
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+// Create a namespace for our SVG-related utilities
+var SVG = {};
+
+// These are SVG-related namespace URLs
+SVG.ns = "http://www.w3.org/2000/svg";
+SVG.xlinkns = "http://www.w3.org/1999/xlink";
+
+// Create and return an empty <svg> element.
+// Note that the element is not added to the document
+// Note that we can specify the pixel size of the image as well as
+// its internal coordinate system.
+SVG.makeCanvas = function(id, pixelWidth, pixelHeight, userWidth, userHeight) {
+    var svg = document.createElementNS(SVG.ns, "svg:svg");
+    svg.setAttribute("id", id);
+    // How big is the canvas in pixels
+    svg.setAttribute("width", pixelWidth);
+    svg.setAttribute("height", pixelHeight);
+    // Set the coordinates used by drawings in the canvas
+    svg.setAttribute("viewBox", "0 0 " + userWidth + " " + userHeight);
+    // Define the XLink namespace that SVG uses
+    svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink",
+                       SVG.xlinkns);
+    return svg;
+};
+
+// Serialize the canvas element to a string and use this string
+// in a data: URL for display in an <object> tag. This allows SVG
+// to work in browsers that support the data: URL scheme and have an SVG 
+// plugin installed.
+SVG.makeDataURL = function(canvas) {
+    // We don't bother with the IE serialization technique since it
+    // doesn't support data: URLs
+    var text = (new XMLSerializer()).serializeToString(canvas);
+    var encodedText = encodeURIComponent(text);
+    return "data:image/svg+xml," + encodedText;
+};
+
+// Create an <object> to display an SVG drawing using a data: URL
+SVG.makeObjectTag = function(canvas, width, height) {
+    var object = document.createElement("object"); // Create HTML <object> tag
+    object.width = width;                          // Set size of object
+    object.height = height;
+    object.data = SVG.makeDataURL(canvas);         // SVG image as data: URL
+    object.type = "image/svg+xml"                  // SVG MIME type
+    return object;
+}
+
+SVG.createSVGElement = function (eltType, properties) { // Create an arbitrary SVG element
+    var elt = document.createElementNS('http://www.w3.org/2000/svg', eltType);
+    for ( prop in properties ) {
+        elt.setAttribute(prop, properties[prop]);
+        }
+    return elt;
+}
+
+// TODO ////////////////////////////////////////////////////////// TODO
+SVG.getCoords=function(/* SVGElement */ node){
+	if (node.getBBox) {
+		var box=node.getBBox();
+		return { x: box.x, y: box.y };
+	}
+	return null;
+};
+SVG.setCoords=function(node, coords){
+	var p=SVG.getCoords();
+	if (!p) return;
+	var dx=p.x - coords.x;
+	var dy=p.y - coords.y;
+	SVG.translate(node, dx, dy);
+};
+SVG.getDimensions=function(node){
+	if (node.getBBox){
+		var box=node.getBBox();
+		return { width: box.width, height : box.height };
+	}
+	return null;
+};
+SVG.setDimensions=function(node, dim){
+	//	will only support shape-based and container elements; path-based elements are ignored.
+	if (node.width){
+		node.width.baseVal.value=dim.width;
+		node.height.baseVal.value=dim.height;
+	}
+	else if (node.r){
+		node.r.baseVal.value=Math.min(dim.width, dim.height)/2;
+	}
+	else if (node.rx){
+		node.rx.baseVal.value=dim.width/2;
+		node.ry.baseVal.value=dim.height/2;
+	}
+};
+
+/**
+ *	Transformations.
+ */
+SVG.setTransformVars = function (node){
+    node.myx = 0;
+    node.myy = 0;
+    node.myrot = 0;
+    node.myrotx = 0;
+    node.myroty = 0;
+    node.myscalex = 1;
+    node.myscaley = 1;
+}
+SVG.applyTransform = function(node){
+    node.setAttribute("transform", "translate(" + node.myx + "," + node.myy + ") rotate (" + node.myrot + "," + node.myrotx + "," + node.myroty + ") scale(" + node.myscalex + "," + node.myscaley + ")");
+}
+SVG.translate=function(node, dx, dy){
+    node.myx = dx;
+    node.myy = dy;
+    SVG.applyTransform(node);
+/*    
+        if (node.transform && node.ownerSVGElement && node.ownerSVGElement.createSVGTransform){
+		var t=node.ownerSVGElement.createSVGTransform();
+		t.setTranslate(dx, dy);
+		node.transform.baseVal.appendItem(t);
+	}
+*/    
+};
+SVG.scale=function(node, scaleX, scaleY){
+    if (!scaleY) var scaleY=scaleX;
+    node.myscalex = scaleX;
+    node.myscaley = scaleY;
+    SVG.applyTransform(node);
+/*    
+	if (!scaleY) var scaleY=scaleX;
+	if (node.transform && node.ownerSVGElement && node.ownerSVGElement.createSVGTransform){
+		var t=node.ownerSVGElement.createSVGTransform();
+		t.setScale(scaleX, scaleY);
+		node.transform.baseVal.appendItem(t);
+	}
+*/
+};
+SVG.rotate=function(node, ang, cx, cy){
+    node.myrot = ang;
+    node.myrotx = cx;
+    node.myroty = cy;
+    SVG.applyTransform(node);
+/*
+        if (node.transform && node.ownerSVGElement && node.ownerSVGElement.createSVGTransform){
+		var t=node.ownerSVGElement.createSVGTransform();
+		if (!cx) t.setMatrix(t.matrix.rotate(ang));
+		else t.setRotate(ang, cx, cy);
+		node.transform.baseVal.appendItem(t);
+	}
+*/    
+};
+SVG.skew=function(node, ang, axis){
+	var dir=axis || "x";
+	if (node.transform && node.ownerSVGElement && node.ownerSVGElement.createSVGTransform){
+		var t=node.ownerSVGElement.createSVGTransform();
+		if (dir != "x") t.setSkewY(ang);
+		else t.setSkewX(ang);
+		node.transform.baseVal.appendItem(t);
+	}
+};
+SVG.flip=function(node, axis){
+	var dir=axis || "x";
+	if (node.transform && node.ownerSVGElement && node.ownerSVGElement.createSVGTransform){
+		var t=node.ownerSVGElement.createSVGTransform();
+		t.setMatrix((dir != "x") ? t.matrix.flipY() : t.matrix.flipX());
+		node.transform.baseVal.appendItem(t);
+	}
+};
+SVG.invert=function(node){
+	if (node.transform && node.ownerSVGElement && node.ownerSVGElement.createSVGTransform){
+		var t=node.ownerSVGElement.createSVGTransform();
+		t.setMatrix(t.matrix.inverse());
+		node.transform.baseVal.appendItem(t);
+	}
+};
+SVG.applyMatrix=function(node, a, b, c, d, e, f){
+	if (node.transform && node.ownerSVGElement && node.ownerSVGElement.createSVGTransform){
+		var m;
+		if (b){
+			var m=node.ownerSVGElement.createSVGMatrix();
+			m.a=a;
+			m.b=b;
+			m.c=c;
+			m.d=d;
+			m.e=e;
+			m.f=f;
+		} else m=a;
+		var t=node.ownerSVGElement.createSVGTransform();
+		t.setMatrix(m);
+		node.transform.baseVal.appendItem(t);
+	}
+};
+
+SVG.getGroup = function(x, y){
+    var grp = document.createElementNS(SVG.ns, "g");
+    SVG.setTransformVars(grp);
+    SVG.translate(grp, x, y);
+    return grp;
+}
+SVG.getLabel = function(text, fs, x, y, w, h, color){
+    var grp = document.createElementNS(SVG.ns, "g");
+    SVG.setTransformVars(grp);
+    SVG.translate(grp, x, y);
+    
+    var cp = document.createElementNS(SVG.ns, "clipPath");
+    grp.appendChild(cp);
+    cp.id = PseudoGuid.GetNew();
+    cp.appendChild(SVG.getRect(0, -h, w, h + fs * 0.3));
+
+    var label = document.createElementNS(SVG.ns, "text");
+    grp.appendChild(label);
+    SVG.setTransformVars(label);
+    
+    label.setAttribute("x", 0);       // Position the text
+    label.setAttribute("y", 0);
+    label.setAttribute("fill", color);
+    label.setAttribute("font-family", "sans-serif");
+    label.setAttribute("font-size", fs);
+    label.setAttribute("clip-path", "url(#" + cp.id + ")");
+
+    label.appendChild(document.createTextNode(text));
+    
+    grp.myLabel = label;
+    
+    return grp;
+}
+
+SVG.getRect = function(x, y, w, h, f, s){
+    var rect = document.createElementNS(SVG.ns, "rect");
+    SVG.setTransformVars(rect);
+    SVG.translate(rect, x, y);
+    rect.setAttribute("x", 0);
+    rect.setAttribute("y", 0);
+    rect.setAttribute("width", w);
+    rect.setAttribute("height", h);
+    rect.setAttribute("fill", f);
+    rect.setAttribute("stroke", s);
+    return rect;
+}
+
+var clearAllChildren = function (cell){
+    if ( cell.hasChildNodes() )
+    {
+        while ( cell.childNodes.length >= 1 )
+        {
+            cell.removeChild( cell.firstChild );       
+        } 
+    }
+}
+
+function elem(v){
+    this.value = v;
+    this.next = null;
+    var sup = this;
+    this.len = function(){
+        var ret = 1;
+        var p = sup;
+        while(p.next != null){
+            ret++;
+            p = p.next;
+        }
+        return ret;
+    }
+}
+
+function cls(n){
+    this.id = PseudoGuid.GetNew();
+    this.name    = n;
+    this.instanceOf = null;
+    this.props   = null;
+    this.objs    = null;
+    this.mapsTo  = null;
+    
+    var sup = this;
+    
+    this.addProp = function(c){
+        if(sup.props == null){
+            sup.props = [];
+        }
+        
+        sup.props.push(c)
+        return c;
+    }
+
+    this.addObj = function(c){
+        if(sup.objs == null){
+            sup.objs = [];
+        }
+        
+        sup.objs.push(c)
+        return c;
+    }
+}
+
+
+/*
+svg.appendChild(SVG.createSVGElement(svg, 'line', lineProperties));
+*/
+/*
+var brect = document.createElementNS(SVG.ns, "rect");
+//rect.setAttribute("transform", "rotate(30, 0, 0)");
+brect.setAttribute("x", 0);
+brect.setAttribute("y", 0);
+brect.setAttribute("width", 300);
+brect.setAttribute("height", 300);
+brect.setAttribute("fill", "black");
+brect.setAttribute("stroke", "black");
+svg.appendChild(brect);
+*/
+
+var PseudoGuid = new (function() {
+    this.empty = "00000000-0000-0000-0000-000000000000";
+    this.GetNew = function() {
+        do{
+            var fourChars = function() {
+                    return (((1 + Math.random()) * 0x10000)|0).toString(16).substring(1).toUpperCase();
+            }
+            var ret = (fourChars() + fourChars() + "-" + fourChars() + "-" + fourChars() + "-" + fourChars() + "-" + fourChars() + fourChars() + fourChars());
+        }while (document.getElementById(ret) != null);
+        return ret;            
+    };
+})();
+
+function clsBrowse(par, idx, cls, x, y, w){
+    sup = this;
+    this.par = par;
+    this.idx = idx;
+    this.cls = cls;
+    this.prop = null;
+    this.width = w;
+    this.fs = 12;
+    this.height = Math.round(this.fs *1.4);
+    this.dheight = 100;
+    this.dbor = Math.round(sup.fs * 0.3);
+    this.cone = "black";
+    this.ctwo = "white";
+    this.cthree = "gray"
+    this.subs = [];
+
+    this.grp = SVG.getGroup(x, y);
+    this.grp.setAttribute("cursor", "default");
+    
+    this.grp.th = this;
+
+    var rect = SVG.getRect(0, 0, this.width, this.height, this.cone, this.cone);
+    this.grp.appendChild(rect);
+
+    var labg = SVG.getGroup(this.height, 0);
+    this.grp.appendChild(labg);
+
+    var lrect = SVG.getRect(0, 0, this.width - this.height - 6, this.height, this.cone, this.cone);
+    labg.appendChild(lrect);
+
+    var lab = SVG.getLabel(cls.name, this.fs, 0, this.fs, this.width - this.height - 6, this.fs, this.ctwo);
+    labg.appendChild(lab);
+/*
+    labg.th = this;
+    labg.myRect = lrect;
+    labg.myOver = function(){
+        lrect.setAttribute('fill', sup.cthree);
+    }
+    labg.myOut = function(){
+        lrect.setAttribute('fill', sup.cone);
+    }
+    labg.setAttribute("onmouseover", "evt.currentTarget.myOver()");
+    labg.setAttribute("onmouseout", "evt.currentTarget.myOut()");
+*/
+    labg.myClick = function(e){
+        var ret = "";
+        var pth = e.th;
+        while(pth != null){
+            var pn;
+            if(pth.prop == null)
+                pn = "";
+            else
+                pn = pth.prop.name;
+            
+            ret = pth.cls.name + "\\" +  pn + ":" + ret;
+            pth = pth.par;
+        }
+        alert(ret);
+    }
+    labg.setAttribute("onclick", "evt.currentTarget.myClick(evt.currentTarget)");
+
+    this.propPick = function(e){
+        var pth11 = e.th;
+        while(pth11 != null){
+            if(pth11.cls.props != null){
+                for(ij = 0; ij < pth11.cls.props.length; ij++){
+                    var curprop11 = pth11.cls.props[ij];
+
+                    var pth12 = e.th.par;
+                    while(pth12 != null){
+                        if(curprop11 == pth12.prop){
+                            break;
+                        } 
+                        pth12 = pth12.par;
+                    }
+                    if(pth12 == null){
+                        return curprop11;
+                    }
+                }
+            }
+            pth11 = pth11.par;
+        }
+        return null;
+    }
+    
+    if(true){
+        expand = SVG.getGroup(0, 0);//document.createElementNS(SVG.ns, "g");
+        this.grp.appendChild(expand);
+        expand.th = this;
+        this.exstate = false;
+
+
+        var tr = document.createElementNS(SVG.ns, "polygon");
+        SVG.setTransformVars(tr);
+        SVG.scale(tr, this.fs/4);
+        SVG.translate(tr, this.height / 2, this.height / 2);
+        tr.setAttribute("points", "-0.5,-0.5 0.25, 0 -0.5, 0.5");
+        //tr.setAttribute("transform", "translate(" + (this.height / 2) + "," + (this.height / 2) + ") scale(" + this.fs/4 + ")");
+        tr.setAttribute("stroke", this.ctwo);
+        tr.setAttribute("onmouseover", "evt.target.setAttribute('stroke', '" + this.cthree + "')");
+        tr.setAttribute("onmouseout", "evt.target.setAttribute('stroke', '" + this.ctwo + "')");
+        expand.appendChild(tr);
+
+
+        this.downrect = SVG.getGroup(0, 0);
+
+        this.subs = [];
+        this.subbox = null;
+        this.sbheight = 0;
+        
+        this.align = function(pp){
+            while(pp != null){
+                var hh = pp.dbor;
+                for(i = 0; i < pp.subs.length; i++){
+                    SVG.translate(pp.subs[i].grp, 0, hh);
+                    hh += pp.subs[i].height + pp.subs[i].sbheight + pp.dbor;
+                }
+                hh += pp.dbor;
+                if(hh < pp.dheight) hh = pp.dheight;
+                pp.subbox.setAttribute("height", hh);
+                pp.sbheight = hh;
+                pp = pp.par;
+            }
+        }
+
+        this.buildDownBox = function(prop, e){
+                var sup = e.th;
+                sup.prop = prop;
+                var par = sup.par;
+
+                clearAllChildren(sup.downrect);
+                var rect = SVG.getRect(0, sup.height, sup.width, sup.dheight, sup.ctwo, sup.cone);
+                sup.downrect.appendChild(rect);
+                sup.subbox = rect;
+
+                var labg = SVG.getGroup(0, 0);
+                sup.downrect.appendChild(labg);
+                sup.downrect.myDivision = labg;
+                
+                var dh = sup.dheight - 2 * sup.dbor;
+                
+                var lrect = SVG.getRect(0, -sup.fs, dh, sup.fs * 1.5, sup.ctwo, sup.ctwo);
+                labg.appendChild(lrect);
+                
+                labg.th = sup;
+                labg.myRect = lrect;
+                labg.myOver = function(){
+                    lrect.setAttribute('fill', sup.cthree);
+                }
+                labg.myOut = function(){
+                    lrect.setAttribute('fill', sup.ctwo);
+                }
+                labg.setAttribute("onmouseover", "evt.currentTarget.myOver()");
+                labg.setAttribute("onmouseout", "evt.currentTarget.myOut()");
+
+
+                labg.myClick = function(e){
+                    e.th.downrect.removeChild(e.th.downrect.myDivision);
+                    e.th.downrect.removeChild(e.th.downrect.mySub);
+
+                    e.th.subbox.setAttribute("height", e.th.dheight);
+
+                    var pth = e.th;
+                    var px = e.th.fs + sup.dbor;
+                    while(pth != null){
+                        if(pth.cls.props != null){
+                            for(i = 0; i < pth.cls.props.length; i++){
+                                var curprop = pth.cls.props[i];
+
+                                var pth12 = e.th.par;
+                                while(pth12 != null){
+                                    if(curprop == pth12.prop){
+                                        break;
+                                    } 
+                                    pth12 = pth12.par;
+                                }
+                                if(pth12 == null){
+                                    var labg1 = SVG.getGroup(0, 0);
+                                    e.th.downrect.appendChild(labg1);
+
+                                    labg1.th = e.th;
+                                    labg1.myProp = curprop;
+                                    labg1.myRect = SVG.getRect(0, -e.th.fs, dh, e.th.fs * 1.5, e.th.ctwo, e.th.ctwo);
+                                    labg1.appendChild(labg1.myRect);
+
+                                    labg1.myOver = function(e){
+                                        e.myRect.setAttribute('fill', e.th.cthree);
+                                    }
+                                    labg1.myOut = function(e){
+                                        e.myRect.setAttribute('fill', e.th.ctwo);
+                                    }
+                                    labg1.setAttribute("onmouseover", "evt.currentTarget.myOver(evt.currentTarget)");
+                                    labg1.setAttribute("onmouseout", "evt.currentTarget.myOut(evt.currentTarget)");
+
+                                    labg1.myClick = function(e){
+                                        e.th.buildDownBox(e.myProp, e);
+                                    }
+                                    labg1.setAttribute("onclick", "evt.currentTarget.myClick(evt.currentTarget)");
+
+                                    var lab1 = SVG.getLabel(curprop.name, e.th.fs, 0, 0, dh, e.th.fs, e.th.cone);
+                                    labg1.appendChild(lab1);
+
+                                    lab1.myLabel.setAttribute("font-weight", "bold")
+                                    lab1.myLabel.setAttribute("font-style", "italic")
+
+                                    SVG.rotate(labg1, -90, 0, 0);
+                                    SVG.translate(labg1, px, e.th.dbor + e.th.height + dh);
+                                    px += e.th.fs * 1.5;
+                                }
+                            }
+                        }
+                        pth = pth.par;
+                        if(pth != null){
+                            var sep = SVG.getRect(px - e.th.fs + e.th.dbor/2, e.th.height + e.th.dbor , 0.1, dh, e.th.ctwo, e.th.cone);
+                            e.th.downrect.appendChild(sep);
+                            px += e.th.dbor;
+                        }
+                    }
+                    e.th.sbheight = e.th.dheight; 
+                    e.th.align(e.th.par);
+                }
+                
+                labg.setAttribute("onclick", "evt.currentTarget.myClick(evt.currentTarget)");
+               
+                var lab = SVG.getLabel(prop.name, sup.fs, 0, 0, dh, sup.fs, "cone");
+                labg.appendChild(lab);
+                
+                lab.myLabel.setAttribute("font-weight", "bold")
+                lab.myLabel.setAttribute("font-style", "italic")
+
+                var lw = lab.myLabel.getComputedTextLength();
+                if(lw > dh) lw = dh;
+                SVG.translate(lab, dh - lw,0);
+                
+
+                SVG.rotate(labg, -90, 0, 0);
+                SVG.translate(labg, sup.dbor + sup.fs, sup.dbor + sup.height + dh);
+
+
+                var subx = sup.height + sup.dbor * 2;
+                var sub = SVG.getGroup(subx, sup.dbor + sup.height);
+                sup.downrect.appendChild(sub);
+                sup.downrect.mySub = sub;
+
+                var sb = prop.objs;
+                var sbh;
+                var subs = [];
+                if(sb != null){
+                    var el = null;
+                    for(i = 0; i < sb.length; i++){
+                        var s1 = new clsBrowse(sup, i, sb[i], 0, sup.dbor + i * (sup.height + sup.dbor), sup.width - subx - sup.dbor);
+                        sub.appendChild(s1.grp);
+                        subs.push(s1);
+                    }
+                    sup.subs = subs;
+
+                    sbh = 2 * sup.dbor + sb.length * (sup.height + sup.dbor);
+                }else{
+                    sbh = 0;
+                }
+
+                if(sbh < sup.dheight) sbh = sup.dheight;
+                sup.sbheight = sbh;
+        }
+        
+        expand.exrot = function(e){
+            var par = e.th.par;
+
+            if(e.th.exstate){
+                e.th.exstate = false;
+                SVG.rotate(e, 0, e.th.height / 2, e.th.height / 2);
+
+                e.th.grp.removeChild(e.th.downrect);
+                clearAllChildren(e.th.downrect);
+                e.th.subs = [];
+                e.th.sbheight = 0;
+
+            }else{
+                var prp = e.th.propPick(e);
+                if(prp == null){
+                    alert("All possible dividings are already used");
+                }else{
+                    e.th.exstate = true;
+                    SVG.rotate(e, 90, e.th.height / 2, e.th.height / 2);
+
+                    e.th.grp.appendChild(e.th.downrect);
+
+                    e.th.buildDownBox(prp, e);
+                }
+            }
+            e.th.align(par);
+        }
+
+        expand.setAttribute("onclick", "this.exrot(evt.currentTarget)");
+    }
+    
+}
+
+var veh = new cls("Vehicles");
+
+var st = veh.addProp(new cls("scape type"));
+var gs = st.addObj(new cls("GroundScape"));
+var ct = gs.addProp(new cls("contact type"));
+ct.addObj(new cls("Wheels"));
+ct.addObj(new cls("Magnet"));
+
+var sk = st.addObj(new cls("SkyScape"));
+var lc = sk.addProp(new cls("lightstorm cap."));
+lc.addObj(new cls("25%"));
+lc.addObj(new cls("50%"));
+
+var se = st.addObj(new cls("SeaScape"));
+var hc = se.addProp(new cls("hydroplaning ab."));
+hc.addObj(new cls("Yes"));
+hc.addObj(new cls("No"));
+
+var us = veh.addProp(new cls("appearance"));
+us.addObj(new cls("Ordinary"));
+us.addObj(new cls("Extraordinary"));
+
+var us = veh.addProp(new cls("use"));
+us.addObj(new cls("Transport"));
+us.addObj(new cls("Tourism"));
+us.addObj(new cls("Cargo"));
+
+//////bus
+var veh4 = veh.addObj(new cls("Bus"));
+var st4 = veh4.addProp(new cls("scape type"));
+var gs4 = st4.addObj(new cls("GroundScape"));
+var ct4 = gs4.addProp(new cls("contact type"));
+ct4.addObj(new cls("Wheels"));
+
+var ap4 = veh4.addProp(new cls("appearance"));
+ap4.addObj(new cls("Ordinary"));
+
+var us4 = veh4.addProp(new cls("use"));
+us4.addObj(new cls("Transport"));
+
+//////car
+var veh1 = veh.addObj(new cls("Car"));
+var st1 = veh1.addProp(new cls("scape type"));
+var gs1 = st1.addObj(new cls("GroundScape"));
+var ct1 = gs1.addProp(new cls("contact type"));
+ct1.addObj(new cls("Wheels"));
+
+var ap1 = veh1.addProp(new cls("appearance"));
+ap1.addObj(new cls("Ordinary"));
+
+var us1 = veh1.addProp(new cls("use"));
+us1.addObj(new cls("Transport"));
+
+//////motorcycle
+var veh2 = veh.addObj(new cls("Motorcycle"));
+var st2 = veh2.addProp(new cls("scape type"));
+var gs2 = st2.addObj(new cls("GroundScape"));
+var ct2 = gs2.addProp(new cls("contact type"));
+ct2.addObj(new cls("Wheels"));
+
+var ap2 = veh2.addProp(new cls("appearance"));
+ap2.addObj(new cls("Extraordinary"));
+
+var us2 = veh1.addProp(new cls("use"));
+us2.addObj(new cls("Transport"));
+
+//////train
+var veh5 = veh.addObj(new cls("Train"));
+var st5 = veh5.addProp(new cls("scape type"));
+var gs5 = st5.addObj(new cls("GroundScape"));
+var ct5 = gs5.addProp(new cls("contact type"));
+ct5.addObj(new cls("Magnet"));
+
+var ap5 = veh5.addProp(new cls("appearance"));
+ap5.addObj(new cls("Extraordinary"));
+
+var us5 = veh5.addProp(new cls("use"));
+us5.addObj(new cls("Transport"));
+
+//////van
+var veh3 = veh.addObj(new cls("Van"));
+var st3 = veh3.addProp(new cls("scape type"));
+var gs3 = st3.addObj(new cls("GroundScape"));
+var ct3 = gs3.addProp(new cls("contact type"));
+ct3.addObj(new cls("Wheels"));
+
+var ap3 = veh1.addProp(new cls("appearance"));
+ap3.addObj(new cls("Ordinary"));
+
+var us3 = veh1.addProp(new cls("use"));
+us3.addObj(new cls("Cargo"));
+
+
+///////////////////////
+var svg = SVG.makeCanvas("nu", 400, 600, 400, 600);
+document.body.appendChild(svg);
+
+var cb = new clsBrowse(null, 0, veh, 0.5, 0.5, 300);
+svg.appendChild(cb.grp);
+</script>
+</body>
+</html>
