@@ -21,15 +21,15 @@ canvasApp.push( function() {
          hXY=[0,0,0];
 
   /* Get canvas properties */
-  var win = $(window);
-  var doc = $(document);
-  var cv = $('canvas#cv');
-  var canvas = cv[0];
-  var context = canvas.getContext('2d');
-  var bb = canvas.getBoundingClientRect();
-  var cv_w = (canvas.width/bb.width);
-  var cv_h = (canvas.height/bb.height);
-  var cv_pos = cv.offset();
+  var win = $(window),
+      doc = $(document),
+      cv = $('canvas#cv'),
+      canvas = cv[0],
+      context = canvas.getContext('2d'),
+      bb = canvas.getBoundingClientRect(),
+      cv_w = (canvas.width/bb.width),
+      cv_h = (canvas.height/bb.height),
+      cv_pos = cv.offset();
   win.scrollTop(cv_pos.top);
 
   /* Define Radial Gradient */
@@ -121,7 +121,7 @@ canvasApp.push( function() {
           c.stroke();
 
           c.restore();
-          c.font = 'small-caps normal 28px Comfortaa';
+          c.font = 'small-caps bold 28px Comfortaa';
           if (gss.p > 2) {
             var h1x = gss.w/2 + 8;
             c.fillStyle = gss.color;
@@ -249,7 +249,7 @@ canvasApp.push( function() {
             //alert('Adding frame');
             Debugger.log('Adding frame');
             try {
-              encoder.addFrame(gss.c);
+              encoder.addFrame(ctx);
             } catch (e) {
               //alert(typeof encoder.addFrame);
             }
