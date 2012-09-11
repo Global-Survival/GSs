@@ -1,8 +1,31 @@
-(function() {
-  if(typeof canvasApp[0] !== 'function') canvasApp=[];
-}());
+/* canvasIntro.js 
+*
+* This is the first demoscene intro created by GSS
+* Code :: Revlin John :: stylogicalmaps@gmail.com
+*
+*/
 
-canvasApp.push( function() {
+function canvasApp() {
+
+  /* Debugger Function */
+Debugger = function Debugger() {};
+Debugger.log = function (message) {
+    try {
+      console.log(message); 
+    } catch (e) {
+      //alert(message);
+    }
+  };
+
+  /* GIF Encoder Variables */
+gif_time = 32;
+  var encoded = false;
+  if(typeof GIFEncoder === "function") {
+    var encoder = new GIFEncoder();
+    encoder.setRepeat(0);   //0  -> loop forever //1+ -> loop n times then stop
+    encoder.setDelay(150);  //go to next frame every n milliseconds
+    encoder.start();
+  }
 
   var rtime = function rtime() {
     var t = new Date();
@@ -201,93 +224,76 @@ canvasApp.push( function() {
   };
 
   /* Draw main function */
-  var draw = function draw(ctx,w,h,v) {
-      /* Timing and Frame drops */
-      var ctime = rtime();
-      var t = fdelay + ptime;
+  var draw = function draw(ctx,w,h) {
+    /* Timing and Frame drops */
+    var ctime = rtime();
+    var t = fdelay + ptime;
 
-  /* START: DRAW frames if ctime is ahead of time t 
-      ELSE: DROP frames*/
-  if (t > ctime) {
+    /* START: DRAW frames if ctime is ahead of time t 
+       ELSE: DROP frames*/
+    if (t > ctime) {
       //Debugger.log("Current time (ms): "+ ctime);
       //Debugger.log("Frame time (ms): "+ t);
 
-      /* Draw video input */
-      if (typeof v !== 'undefined') {
-        /* Check if a GIF is being created before drawing video */
-        if (gif_time > 31 ) {
-          drawVideo(v, ctx, 0, 0, w, h);
-        }
-      }
-
       ctx.globalAlpha = 1.0;
 
-      if (vdrawing === false) {
+      /* Draw Title */
+      if (ftime < 96) {
+        ctx.clearRect(0,0,w,h);
+        if (ftime > 92) ctx.globalAlpha = 32/ftime;
+        ts.drawScreen(w, h);
+        ctx.drawImage(ts.c.canvas, 0, 0);
+      } 
 
-         /* Draw Title */
-         if (ftime < 96) {
-           if (ftime > 76) ctx.globalAlpha-=0.1; 
-           ts.drawScreen(w, h);
-           ctx.drawImage(ts.c.canvas, 0, 0);
-         } 
-
-         /*Draw GSS Title */
-         if (ftime > 92) {
-           if (ftime < 96) {
-             ctx.globalAlpha=0.25;
-           } else {
-             ctx.globalAlpha=1.0;
-           }
-           gss.drawScreen(w, h);
-           //Debugger.log('Drawing GSS Title '+ gss.p);
-           ctx.drawImage(gss.c.canvas, 0, 0, w, h);
-         }
-
-        /* GIF Recording */
-        if (gif_time < 9) {
-          if (ftime%5 <= 1) {
-            //alert('Adding frame');
-            Debugger.log('Adding frame');
-            try {
-              encoder.addFrame(ctx);
-            } catch (e) {
-              //alert(typeof encoder.addFrame);
-            }
-          }
-        } else if ((!encoded) && (gif_time < 11)) {
-          //alert('GIF complete');
-          Debugger.log('GIF complete');
-          encoder.finish();
-          var binary_gif = encoder.stream().getData();
-          var data_url = 'data:image/gif;base64,'+encode64(binary_gif);
-          Debugger.log(data_url);
-          $('#license').after("<img src=\'"+ data_url +"\' width='768' height='432'/>");
-          window.location.hash = '#license';
-          encoded = true;
+      /*Draw GSS Title */
+      if (ftime > 92) {
+        if (ftime < 96) {
+          ctx.globalAlpha=0.25;
         } else {
-          /* Reset GIF Recorder */
-          encoded = false;
-          encoder = new GIFEncoder();
-          encoder.setRepeat(0);   //0  -> loop forever
-                        //1+ -> loop n times then stop
-          encoder.setDelay(150);  //go to next frame every n milliseconds
-          encoder.start();
-          gif_time = 32;
+          ctx.globalAlpha=1.0;
+          ctx.clearRect(0,0,w,h);
         }
-      } else if (vdrawing === true) {
-        vplayed += 1;
-        if (ftime < 3000) {
-          ctx.lineWidth = 2;
-          ctx.strokeStyle = '#fff';
-          ctx.font = 'bold 44px Comfortaa';
-          ctx.strokeText('The Stylogical Map', 8, 128);
+        gss.drawScreen(w, h);
+        //Debugger.log('Drawing GSS Title '+ gss.p);
+        ctx.drawImage(gss.c.canvas, 0, 0, w, h);
+      }
+
+      /* GIF Recording */
+      if (gif_time < 9) {
+        if (ftime%5 <= 1) {
+          //alert('Adding frame');
+          Debugger.log('Adding frame');
+          try {
+            encoder.addFrame(ctx);
+          } catch (e) {
+            //alert(typeof encoder.addFrame);
+          }
         }
+      } else if ((!encoded) && (gif_time < 11)) {
+        //alert('GIF complete');
+        Debugger.log('GIF complete');
+        encoder.finish();
+        var binary_gif = encoder.stream().getData();
+        var data_url = 'data:image/gif;base64,'+encode64(binary_gif);
+        Debugger.log(data_url);
+        $('#license').after("<img src=\'"+ data_url +"\' width='768' height='432'/>");
+        window.location.hash = '#license';
+        encoded = true;
+      } else {
+        /* Reset GIF Recorder */
+        encoded = false;
+        encoder = new GIFEncoder();
+        encoder.setRepeat(0); //0  -> loop forever
+                              //1+ -> loop n times then stop
+        encoder.setDelay(150);  //go to next frame every n milliseconds
+        encoder.start();
+        gif_time = 32;
       }
 
   } else {
-    //Debugger.log("DROP FRAME");
+    Debugger.log("DROP FRAME");
   }
-  /* STOP: Drop frames */
+      /* STOP: Drop frames */
       //Debugger.log( "Frame Rate (fps): "+ ( 1000 / (ctime-ptime) ));
       ptime = ctime;
 
@@ -303,20 +309,12 @@ canvasApp.push( function() {
         ftime = 0;
       }
        
-  };
+    };
 
   /* Record GIF function */
-  if (typeof recordGIF === "object") {
-    recordGIF = function recordGIF () {
-      if ((!vdrawing) && (vplayed === 0))  {
-        //var cv = $("canvas#cv")[0];
-        //cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
-        gif_time = 0;
-      } else {
-        alert("GIF animations can only be created prior to any video playing on this page.\n Please refresh the page and start recording a GIF *before* playing the video.\n dream, play & have fun,\n Rev");
-      }  
-    };
-  }
+  recordGIF = function recordGIF () {
+    gif_time = 0;
+  };
 
   var touchHit = function touchHit(event) {
     //Debugger.log(event.touches);
@@ -379,15 +377,13 @@ canvasApp.push( function() {
 
   /* Initialize draw loop */
   try {
-    var videos = $('video').toArray();
-    var numVids = videos.length;
-    ptime = rtime();
-     /* Display initial time props */
+    /* Display initial time props */
+    //ptime = rtime();
     //Debugger.log("Start time: "+ ptime);
-    drawLoop = setInterval(draw,frate,context,canvas.width,canvas.height,videos);
+    drawLoop = setInterval(draw,frate,context,canvas.width,canvas.height);
     Debugger.log('drawLoop started');
   } catch(e) { 
     Debugger.log('drawLoop failed to start'); 
   }  
 
-});
+}
