@@ -62,7 +62,6 @@ while (my $line = <$inputf>) {
     while ($line = <$resf>) {
       my $resline = $line;
       chop $resline;
-      chop $resline;
       print $resline, "\n";
       print $outputf $resline, "\n";
     }

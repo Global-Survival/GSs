@@ -51,9 +51,7 @@ div#header-canvas {
   width: 640px;
   height: 360px;
   height-min: 300px;
-  margin: 8px 0px 0px -1px;
-  border-left: 1px solid #fff;
-  border-right: 1px solid #fff;
+  margin: 8px auto 0px auto;
   overflow:hidden;
 }
 
@@ -79,7 +77,7 @@ div#stream {
   visibility:hidden;
 }
 
-/* END EDIT */
+/* END EDIT *
 </style>
 
 <script>
@@ -1945,34 +1943,34 @@ gif_time = 32;
   /* GSS Title screen */
   var gss = {
     drawScreen : function  (w, h) {
-      if (typeof gss.p === 'undefined') {
-        gss.p = ftime;
-        gss.h1 = ['Global', 'Survival', 'Systems'];
-        gss.w = 256;
-        gss.h = 144;
-        gss.color = '#12f';
-        gss.c = $("<canvas></canvas>").attr({width:gss.w, height:gss.h})[0].getContext('2d');
-        gss.g_grad = gss.c.createLinearGradient(0,0,0,gss.h);
-        gss.g_grad.addColorStop(0.4, '#12f');
-        gss.g_grad.addColorStop(0.5, '#2f2');
-        gss.s_grad = gss.c.createLinearGradient(0,0,0,gss.h);
-        gss.s_grad.addColorStop(0.45, '#2f2');
-        gss.s_grad.addColorStop(0.55, '#12f');
-        gss.PI = Math.PI/15;
+      if (typeof this.p === 'undefined') {
+        this.p = ftime;
+        this.h1 = ['Global', 'Survival', 'Systems'];
+        this.w = 256;
+        this.h = 144;
+        this.color = '#12f';
+        this.c = $("<canvas></canvas>").attr({width:this.w, height:this.h})[0].getContext('2d');
+        this.g_grad = this.c.createLinearGradient(0,0,0,this.h);
+        this.g_grad.addColorStop(0.4, '#12f');
+        this.g_grad.addColorStop(0.5, '#2f2');
+        this.s_grad = this.c.createLinearGradient(0,0,0,this.h);
+        this.s_grad.addColorStop(0.45, '#2f2');
+        this.s_grad.addColorStop(0.55, '#12f');
+        this.PI = Math.PI/15;
 
-        gss.drawScreen = function drawScreen(w,h) {
-          var c = gss.c;
+        this.drawScreen = function drawScreen(w,h) {
+          var c = this.c;
           c.globalAlpha = 1.0;
-          c.clearRect(0, 0, gss.w, gss.h);
+          c.clearRect(0, 0, this.w, this.h);
           c.save();
 
-          var cyc = gss.p%45-15;
+          var cyc = this.p%45-15;
           if (15>cyc) {
             c.beginPath();
             c.moveTo(64,72);
             c.moveTo(120,76);
-            c.arc(64,72, 64, 0,-gss.PI*(cyc), true);
-            c.arc(64,72, 64, Math.PI-gss.PI*(cyc),Math.PI, false);
+            c.arc(64,72, 64, 0,-this.PI*(cyc), true);
+            c.arc(64,72, 64, Math.PI-this.PI*(cyc),Math.PI, false);
             c.closePath();
             c.lineWidth=8;
             c.strokeStyle='#fff';
@@ -1985,7 +1983,7 @@ gif_time = 32;
           c.bezierCurveTo(8,144, 120,144, 120,72);
           c.lineTo(92,72);
           c.lineWidth=4;
-          c.strokeStyle=gss.g_grad;
+          c.strokeStyle=this.g_grad;
           c.stroke();
           c.beginPath(); 
           c.moveTo(72,68);
@@ -2001,88 +1999,99 @@ gif_time = 32;
           c.quadraticCurveTo(64,124, 50,114);
           c.quadraticCurveTo(32,100, 56,76);
           c.lineWidth=4;
-          c.strokeStyle=gss.s_grad;
+          c.strokeStyle=this.s_grad;
           c.stroke();
 
           c.restore();
           c.font = 'small-caps bold 28px Comfortaa';
-          if (gss.p > 2) {
-            var h1x = gss.w/2 + 8;
-            c.fillStyle = gss.color;
-            for (var i=0, z=gss.h1.length; i<z; i+=1)  {
+          if (this.p > 2) {
+            var h1x = this.w/2 + 8;
+            c.fillStyle = this.color;
+            for (var i=0, z=this.h1.length; i<z; i+=1)  {
               //c.strokeText('TEST', 100, 100);
-              c.fillText(gss.h1[i], h1x, 52+(i*32));
+              c.fillText(this.h1[i], h1x, 52+(i*32));
             }
           } 
-          gss.p = ftime;       
+          this.p = ftime;       
         };
-        Debugger.log('drawGSS: '+ gss.p +' (first run)');
+        Debugger.log('drawGSS: '+ this.p +' (first run)');
       }
     }
   };
 
-  /* Define Title Screen */
-  var ts = {
-    drawScreen : function (w, h) {
-      if (typeof ts.p === 'undefined') {
-          ts.p = ftime;
-          ts.h1 = ['G',' ','S',' ','S'];
-          ts.hx = [];
-          ts.hy = h - 12;
-          ts.f = []; 
-          ts.fc = '#23f';
-          ts.c = $("<canvas></canvas>").attr({width:w, height:h})[0].getContext('2d');
-          ts.c.beginPath();
-          ts.c.moveTo(0, 0);
-          ts.c.lineTo(w, 0);
-          ts.c.lineTo(w,h);
-          ts.c.lineTo(0, h);
-          ts.c.closePath();
-          ts.c.clip();
+  /* A Title Screen function */
+  var drawTitle = function drawTitle () {
+      if (typeof this.p === 'undefined') {
+          var w = arguments[0];
+          var h = arguments[1];
+          this.init = ftime;
+          this.p = ftime - this.init;
+          this.h1 = arguments[3];
+          this.hx = [];
+          this.hy = h - 12;
+          this.f = []; 
+          this.fc = '#23f';
+          this.c = $("<canvas></canvas>").attr({width:w, height:h})[0].getContext('2d');
+          this.c.beginPath();
+          this.c.moveTo(0, 0);
+          this.c.lineTo(w, 0);
+          this.c.lineTo(w,h);
+          this.c.lineTo(0, h);
+          this.c.closePath();
+          this.c.clip();
 
-          ts.drawScreen = function drawScreen(w, h) {
-            var c = ts.c;
+          this.drawScreen = function () {
+            var c = this.c;
+            var w = arguments[0];
+            var h = arguments[1];
             c.globalAlpha = 1.0;
-            if (ts.p < 72) {
+            if (this.p < 72) {
               c.globalAlpha = 0.1;
               c.fillStyle = '#000';
               c.fillRect(0, 0, w, h);
-              c.fillStyle = ts.fc;
-              c.strokeStyle = ts.fc;
+              c.fillStyle = this.fc;
+              c.strokeStyle = this.fc;
               c.globalAlpha = 1.0;
-              for(var i=z=(ts.h1.length-1); (i+1)>0; i--) {
-                var cx = ts.hx[ts.p]+(i*36);
-                c.font = 'bold '+ ts.f[ts.p] +'px Comfortaa';
-                c.fillText(ts.h1[i], cx, ts.hy);
-                c.strokeText(ts.h1[i], cx, ts.hy);
+              for(var i=z=(this.h1.length-1); (i+1)>0; i--) {
+                var cx = this.hx[this.p]+(i*36);
+                c.font = 'bold '+ this.f[this.p] +'px Comfortaa';
+                c.fillText(this.h1[i], cx, this.hy);
+                c.strokeText(this.h1[i], cx, this.hy);
               }
             } else {
-                if (ts.p < 92) {
+                if (this.p < 92) {
                   c.globalAlpha = 0.1;
                   c.fillStyle = '#000';
                   c.fillRect(0, 0, w, h);
-                  c.strokeStyle = ts.fc;
+                  c.strokeStyle = this.fc;
                   c.globalAlpha = 1.0;
                 } else {
                   c.globalAlpha = 1.0;
                   c.clearRect(0, 0, w, h);
                 }
               c.font = 'bold small-caps 52px Comfortaa';
-              c.fillStyle = ts.fc;
-              c.fillText('GSS Presents', ts.hx[0], ts.hy);
-              c.strokeText('GSS Presents', ts.hx[0], ts.hy);
+              c.fillStyle = this.fc;
+              c.fillText(arguments[4], this.hx[0], this.hy);
+              c.strokeText(arguments[4], this.hx[0], this.hy);
             }
-            ts.p = ftime;
+            this.p = ftime - this.init;
           };
 
         for (var i=0; i<128; i++) {
-          ts.hx.push(64+(4*i));
-          ts.f.push(( .038*(i*i) - 8.42*i + 512 ));
+          this.hx.push(48+(4*i));
+          this.f.push(( .038*(i*i) - 8.42*i + 512 ));
         }
-        Debugger.log('drawTitle: '+ ts.p +' (first run)');
+        Debugger.log(arguments[2] +': '+ this.p +' (first run)');
       } 
-    }
+    };
+
+  /* Define first Title Screen */
+  var ts = {
+    drawScreen : drawTitle
   };
+
+  /* Define second Title Screen */
+  var t2 = [];
 
   /* Draw main function */
   var draw = function draw(ctx,w,h) {
@@ -2098,25 +2107,80 @@ gif_time = 32;
 
       ctx.globalAlpha = 1.0;
 
-      /* Draw Title */
-      if (ftime < 96) {
-        ctx.clearRect(0,0,w,h);
-        if (ftime > 92) ctx.globalAlpha = 32/ftime;
-        ts.drawScreen(w, h);
+      /* Draw first Title */
+      if (ftime < 100) {
+        if (ftime > 96) {
+          ctx.globalAlpha = 32/ftime;
+        } else {
+          ctx.globalAlpha=1.0;
+          ctx.clearRect(0,0,w,h);
+        }
+        ts.drawScreen(w, h, 'drawTitle', ['G','  ','S',' ','S'], 'GSS Presents');
         ctx.drawImage(ts.c.canvas, 0, 0);
       } 
 
       /*Draw GSS Title */
-      if (ftime > 92) {
-        if (ftime < 96) {
+      if (ftime > 96 && ftime < 268) {
+        if (ftime < 100) {
           ctx.globalAlpha=0.25;
         } else {
           ctx.globalAlpha=1.0;
           ctx.clearRect(0,0,w,h);
         }
         gss.drawScreen(w, h);
-        //Debugger.log('Drawing GSS Title '+ gss.p);
         ctx.drawImage(gss.c.canvas, 0, 0, w, h);
+      }
+
+      /* Draw secondary Titles */
+      var phrase = ['::Are ','You ','Paying::','Netention???'];
+      if (typeof t2.p !== 'number') for (var i=0, z=phrase.length; i<z; i++) {
+        if (ftime > 550 && ftime < 640) ctx.clearRect(0,0,w,h);
+        if (typeof t2[i] !== 'object') t2.push({drawScreen : drawTitle}); 
+        if (ftime > (264+i*86) && ftime < (380+i*86)) {
+          if (ftime > 400) { 
+            var a = (400+12*i)/ftime;
+            ctx.globalAlpha = (a < 1) ? a : 1.0;
+          }
+          t2[i].drawScreen(w, h, 'drawTitle2.'+i, [phrase[i]], phrase[i]);
+          ctx.drawImage(t2[i].c.canvas, 0, 0);
+        }
+      }
+
+      /*Draw GSS Title again*/
+      if (ftime > 640 && ftime < 768) {
+        if (ftime < 680) {
+          ctx.globalAlpha=0.1;
+        } else if (ftime > 752) {
+          ctx.globalAlpha = 256/ftime;
+        } else {
+          ctx.globalAlpha=1.0;
+          ctx.clearRect(0,0,w,h);
+        }
+        gss.drawScreen(w, h);
+        ctx.drawImage(gss.c.canvas, 0, 0, w, h);
+      }
+
+      /* Draw url Title */
+      if (ftime > 768) {
+        if (ftime < 680) {
+          ctx.globalAlpha=0.1;
+        } else {
+          ctx.globalAlpha=1.0;
+          ctx.clearRect(0,0,w,h);
+        }
+        if (typeof t2.p !== 'number') t2 = {drawScreen : drawTitle}; 
+        t2.drawScreen(w, h, 'drawTitle3', [':GSS.'], 'gss.netention.org');
+        ctx.drawImage(t2.c.canvas, 0, 0);
+        if ('ontouchmove' in document.createElement('div'))  {
+          cv.bind('touchstart', function(e){
+            e.preventDefault();
+            window.location.replace("http://gss.netention.org");
+          });
+        } else {
+          cv.mousedown(function(e) {
+            window.location.replace("http://gss.netention.org");  
+          });
+        }
       }
 
       /* GIF Recording */
@@ -2194,7 +2258,7 @@ gif_time = 32;
     Debugger.log('mouse coords captured');
   }
   if ('ontouchmove' in document.createElement('div'))  {
-    /*win.bind('touchstart', function(e){
+    /*win.bind('touchstart', fu  nction(e){
       e.preventDefault();
     });
     win.bind('touchmove', function(e){
