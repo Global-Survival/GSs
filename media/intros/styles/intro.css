@@ -44,9 +44,7 @@ div#header-canvas {
   width: 640px;
   height: 360px;
   height-min: 300px;
-  margin: 8px 0px 0px -1px;
-  border-left: 1px solid #fff;
-  border-right: 1px solid #fff;
+  margin: 8px auto 0px auto;
   overflow:hidden;
 }
 
