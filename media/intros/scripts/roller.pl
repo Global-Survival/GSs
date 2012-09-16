@@ -19,6 +19,7 @@ use strict;
 
 #Required Perl modules:
 use Fcntl qw(:flock SEEK_END);
+use MIME::Base64;
 use MIME::Base64::URLSafe;
 
 #subroutines for using flock on data files
@@ -63,6 +64,7 @@ print "\n";
 while (my $line = <$inputf>) { 
   my $fline = $line;
   chop $fline;
+
   if ( ($fline =~ /^(<link)/) and ($fline =~ /stylesheet/) and ($fline =~ /(href=){1}(\'?)(\"?)((\w|\-|\_|\/|\.)+)(\'?)(\"?)/) ) {
     my $resname = $4;
     my $respath = $resname;
@@ -96,11 +98,13 @@ while (my $line = <$inputf>) {
         } else {
           $encodedData = "data:application/x-font-ttf; base64, ";
         }
-        while ($line = <$base64f>) {
-          my $b64line = $line;
-          chop $b64line;
-          $encodedData = $encodedData . urlsafe_b64encode($b64line);
-        }
+        # Undef the file record separator so we can read the whole thing 
+        # in one go, save for re-assignment later
+        my $save_line_sep = $/;
+        undef $/;
+        my $b64line = <$base64f>;
+        $/ = $save_line_sep;
+        $encodedData = $encodedData . encode_base64($b64line);
         $resline =~ s/$URLline/$encodedData/;
         print $resline, "\n";
         print $outputf $resline, "\n";
@@ -146,6 +150,35 @@ while (my $line = <$inputf>) {
     unlock($resf);
     close $resf;
     chdir $wkdir;
+
+  } elsif ( ($fline =~ /(<img)/s) and ($fline =~ /(src=){1}(\'?)(\"?)((\w|\-|\_|\/|\.)+)(\'?)(\"?)/) ){
+    my $URLline = $4;
+    #print $URLline, "\n"; 
+    #print $outputf $URLline, "\n"; 
+    #print "Current working directory $ENV{PWD}\n";
+    #print $outputf "Current working directory $ENV{PWD}\n";
+    my $base64f;
+    open $base64f, '<', $URLline or die "Can't open $URLline: $!\n";
+    lock($base64f);
+    binmode $base64f;
+    my $encodedData;
+    if ($fline =~ /gif/) {
+      $encodedData = "data:image/gif; base64,  ";
+    } else {
+      $encodedData = "data: ";
+    }
+        # Undef the file record separator so we can read the whole thing 
+        # in one go, save for re-assignment later
+        my $save_line_sep = $/;
+        undef $/;
+        my $b64line = <$base64f>;
+        $/ = $save_line_sep;
+        $encodedData = $encodedData . encode_base64($b64line);
+    $fline =~ s/$URLline/$encodedData/;
+    print $fline, "\n";
+    print $outputf $fline, "\n";
+    unlock($base64f);
+    close($base64f);
 
   } else {
     print $fline, "\n";
