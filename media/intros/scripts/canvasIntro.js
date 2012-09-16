@@ -86,7 +86,9 @@ gif_time = 32;
     drawScreen : function  (w, h) {
       if (typeof this.p === 'undefined') {
         this.p = ftime;
-        this.h1 = ['Global', 'Survival', 'Systems'];
+        this.h1 = [['Global'], 
+                   ['Survival','Support','Self','Safety','Satisfaction','Sufficiency','Surveillance','Sousveillance','Subsistance','Sustinance'], 
+                   ['System','Systems','Sufficiency','Society','Sanity','Spontanaeity']];
         this.w = 256;
         this.h = 144;
         this.color = '#12f';
@@ -146,11 +148,11 @@ gif_time = 32;
           c.restore();
           c.font = 'small-caps bold 28px Comfortaa';
           if (this.p > 2) {
-            var h1x = this.w/2 + 8;
+            var h1x = this.w/2 + 4;
             c.fillStyle = this.color;
             for (var i=0, z=this.h1.length; i<z; i+=1)  {
               //c.strokeText('TEST', 100, 100);
-              c.fillText(this.h1[i], h1x, 52+(i*32));
+              c.fillText(this.h1[i][(this.p%this.h1[i].length)], h1x, 52+(i*32));
             }
           } 
           this.p = ftime;       
@@ -310,16 +312,16 @@ gif_time = 32;
           ctx.clearRect(0,0,w,h);
         }
         if (typeof t2.p !== 'number') t2 = {drawScreen : drawTitle}; 
-        t2.drawScreen(w, h, 'drawTitle3', [':GSS.'], 'gss.netention.org');
+        t2.drawScreen(w, h, 'drawTitle3', [':GSS.'], '::Gss. @Netention.Org::');
         ctx.drawImage(t2.c.canvas, 0, 0);
         if ('ontouchmove' in document.createElement('div'))  {
           cv.bind('touchstart', function(e){
             e.preventDefault();
-            window.location.replace("http://gss.netention.org");
+            window.location.replace("http://netention.org");
           });
         } else {
           cv.mousedown(function(e) {
-            window.location.replace("http://gss.netention.org");  
+            window.location.replace("http://netention.org");  
           });
         }
       }
@@ -453,3 +455,4 @@ gif_time = 32;
   }  
 
 }
+
