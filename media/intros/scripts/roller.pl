@@ -31,6 +31,18 @@ sub unlock {
   flock($fh, LOCK_UN) or die "Cannot unlock data file - $!\n";
 }
 
+#Note the current directory
+my $wkdir = $ENV{PWD};
+my ($safe_file_name) = $wkdir =~ /^((\/|\w|\-|\_|.)+)+$/; 
+if ( !$safe_file_name ) { 
+  die "Invalid output filename";
+} else {
+  $wkdir = $safe_file_name;
+}
+#foreach my $env (sort keys %ENV) {
+#  print $env,": ",$ENV{$env},"\n"; 
+#}
+
 #Create file handle and open/lock the input file
 my $inputf;
 my $file = $ARGV[0] or die "Invalid input filename";
@@ -40,11 +52,11 @@ lock($inputf);
 #Do the same for the output file, but check filename for safe chars
 my $outputf; 
 $file = $ARGV[1] or die "Invalid output filename"; 
-my ($safe_file_name) = $file =~ /^(\w+.*)$/; 
+($safe_file_name) = $file =~ /^(\w+.*)$/; 
 if ( !$safe_file_name ) { 
   die "Invalid output filename";
 }
-open $outputf, '>', $safe_file_name or die "Can't open $file: $!\n"; 
+open $outputf, '>', $safe_file_name or die "Can't open $safe_file_name: $!\n"; 
 lock($outputf); 
 print "\n"; 
 
@@ -53,26 +65,73 @@ while (my $line = <$inputf>) {
   chop $fline;
   if ( ($fline =~ /^(<link)/) and ($fline =~ /stylesheet/) and ($fline =~ /(href=){1}(\'?)(\"?)((\w|\-|\_|\/|\.)+)(\'?)(\"?)/) ) {
     my $resname = $4;
-    print '<!--Resource @ ', $resname, "-->\n"; 
+    my $respath = $resname;
+    if ( $resname =~ /\.?\.?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\// ) {
+      $respath = $&;
+      my $restmp = $resname;
+      $restmp =~ s/$respath//;
+      $resname = $restmp;
+    }
+    print '<!--Resource ', $resname, ' @ ', $respath, "-->\n";
+    chdir $respath; 
     my $resf;
-    open $resf, '<', $resname or die "Can't open $file: $!\n";
+    open $resf, '<', $resname or die "Can't open $resname: $!\n";
     lock($resf);
     print "<style type=\'text\/css\' >\n";
     print $outputf "<style type=\'text\/css\' >\n";
     while ($line = <$resf>) {
       my $resline = $line;
       chop $resline;
-      print $resline, "\n";
-      print $outputf $resline, "\n";
+      if ( ($resline =~ /(src:)?(\s?)(url\(){1}(\'?)(\"?)((\.|\/|\w|\_|\-)+)/s) ) {
+        my $URLline = $6;
+        #print "Current working directory $ENV{PWD}\n";
+        #print $outputf "Current working directory $ENV{PWD}\n";
+        my $base64f;
+        open $base64f, '<', $URLline or die "Can't open $URLline: $!\n";
+        lock($base64f);
+        binmode $base64f;
+        my $encodedData;
+        if ($resline =~ /woff/) {
+          $encodedData = "data:application/x-font-woff; base64, ";
+        } else {
+          $encodedData = "data:application/x-font-ttf; base64, ";
+        }
+        while ($line = <$base64f>) {
+          my $b64line = $line;
+          chop $b64line;
+          $encodedData = $encodedData . urlsafe_b64encode($b64line);
+        }
+        $resline =~ s/$URLline/$encodedData/;
+        print $resline, "\n";
+        print $outputf $resline, "\n";
+        unlock($base64f);
+        close($base64f);
+
+      } else {
+        print $resline, "\n";
+        print $outputf $resline, "\n";
+      }
     }
+
     print "<\/style>\n";
     print $outputf "<\/style>\n";
+    unlock($resf);
+    close $resf;
+    chdir $wkdir;
 
   } elsif ( ($fline =~ /^(<script)/) and ($fline =~ /(src=){1}(\'?)(\"?)((\w|\-|\_|\/|\.)+)(\'?)(\"?)/) ) {
     my $resname = $4;
-    print '<!--Resource @ ', $resname, "-->\n"; 
+    my $respath = $resname;
+    if ( $resname =~ /\.?\.?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\/?((\w|\-|\_|\.)+)?\// ) {
+      $respath = $&;
+      my $restmp = $resname;
+      $restmp =~ s/$respath//;
+      $resname = $restmp;
+    }
+    print '<!--Resource ', $resname, ' @ ', $respath, "-->\n";
+    chdir $respath; 
     my $resf;
-    open $resf, '<', $resname or die "Can't open $file: $!\n";
+    open $resf, '<', $resname or die "Can't open $resname: $!\n";
     lock($resf);
     print "<script>\n";
     print $outputf "<script>\n";
@@ -84,12 +143,18 @@ while (my $line = <$inputf>) {
     }
     print "<\/script>\n";
     print $outputf "<\/script>\n";
+    unlock($resf);
+    close $resf;
+    chdir $wkdir;
 
   } else {
     print $fline, "\n";
     print $outputf $fline, "\n";
   }
 }
+
+unlock($inputf);
 close $inputf;
+unlock($outputf);
 close $outputf;
 print "\n";
