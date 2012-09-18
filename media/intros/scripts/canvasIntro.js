@@ -192,13 +192,13 @@ gif_time = 32;
               c.globalAlpha = 0.1;
               c.fillStyle = '#000';
               c.fillRect(0, 0, w, h);
-              c.fillStyle = this.fc;
+              //c.fillStyle = this.fc;
               c.strokeStyle = this.fc;
               c.globalAlpha = 1.0;
               for(var i=z=(this.h1.length-1); (i+1)>0; i--) {
                 var cx = this.hx[this.p]+(i*36);
                 c.font = 'bold '+ this.f[this.p] +'px Comfortaa';
-                c.fillText(this.h1[i], cx, this.hy);
+                //c.fillText(this.h1[i], cx, this.hy);
                 c.strokeText(this.h1[i], cx, this.hy);
               }
             } else {
@@ -212,10 +212,9 @@ gif_time = 32;
                   c.globalAlpha = 1.0;
                   c.clearRect(0, 0, w, h);
                 }
-              c.font = 'bold small-caps 52px Comfortaa';
+              c.font = 'bold small-caps 58px Comfortaa';
               c.fillStyle = this.fc;
-              c.fillText(arguments[4], this.hx[0], this.hy);
-              c.strokeText(arguments[4], this.hx[0], this.hy);
+              c.fillText(arguments[4], this.hx[0]-24, this.hy);
             }
             this.p = ftime - this.init;
           };

@@ -92,27 +92,27 @@ while (my $line = <$inputf>) {
         my $base64f;
         if ( $URLline =~  /(\'?)(\"?)((\w|\-|\_|\/|\.)+)/s ) {
           open $base64f, '<', $3 or die "Can't open $3: $!\n";
+          lock($base64f);
+          binmode $base64f;
+          my $encodedData;
+          if ($resline =~ /\.woff/) {
+            $encodedData = "data:application/x-font-woff;charset=utf-8;base64,";
+          } elsif ($resline =~ /\.ttf/) {
+            $encodedData = "data:application/x-font-truetype;charset=utf-8;base64,";
+          }
+          # Undef the file record separator so we can read the whole thing 
+          # in one go, save for re-assignment later
+          my $save_line_sep = $/;
+          undef $/;
+          my $b64line = <$base64f>;
+          $/ = $save_line_sep;
+          $encodedData = $encodedData . encode("UTF-8", encode_base64($b64line, ''));
+          $resline =~ s/$URLline/$encodedData/;
+          unlock($base64f);
+          close($base64f);
         }
-        lock($base64f);
-        binmode $base64f;
-        my $encodedData;
-        if ($resline =~ /woff/) {
-          $encodedData = "data:font/opentype; base64, ";
-        } else {
-          $encodedData = "data:font/truetype; base64, ";
-        }
-        # Undef the file record separator so we can read the whole thing 
-        # in one go, save for re-assignment later
-        my $save_line_sep = $/;
-        undef $/;
-        my $b64line = <$base64f>;
-        $/ = $save_line_sep;
-        $encodedData = $encodedData . encode_base64($b64line);
-        $resline =~ s/$URLline/$encodedData/;
         print $resline, "\n";
         print $outputf $resline, "\n";
-        unlock($base64f);
-        close($base64f);
 
       } else {
         print $resline, "\n";
