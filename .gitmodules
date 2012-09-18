@@ -7,3 +7,6 @@
 [submodule "media/intros/scripts/jsgif"]
 	path = media/intros/scripts/jsgif
 	url = https://github.com/antimatter15/jsgif.git
+[submodule "current/gss2"]
+	path = current/gss2
+	url = http://github.com/automenta/gss2.git
