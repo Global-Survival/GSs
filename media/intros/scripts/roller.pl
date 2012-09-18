@@ -21,6 +21,7 @@ use strict;
 use Fcntl qw(:flock SEEK_END);
 use MIME::Base64;
 use MIME::Base64::URLSafe;
+use Encode qw(encode);
 
 #subroutines for using flock on data files
 sub lock {
@@ -84,19 +85,21 @@ while (my $line = <$inputf>) {
     while ($line = <$resf>) {
       my $resline = $line;
       chop $resline;
-      if ( ($resline =~ /(src:)?(\s?)(url\(){1}(\'?)(\"?)((\.|\/|\w|\_|\-)+)/s) ) {
-        my $URLline = $6;
+      if ( ($resline =~ /(src:)?(\s?)(url\(){1}((\'|\"|\.|\/|\w|\_|\-)+)/s) ) {
+        my $URLline = $4;
         #print "Current working directory $ENV{PWD}\n";
         #print $outputf "Current working directory $ENV{PWD}\n";
         my $base64f;
-        open $base64f, '<', $URLline or die "Can't open $URLline: $!\n";
+        if ( $URLline =~  /(\'?)(\"?)((\w|\-|\_|\/|\.)+)/s ) {
+          open $base64f, '<', $3 or die "Can't open $3: $!\n";
+        }
         lock($base64f);
         binmode $base64f;
         my $encodedData;
         if ($resline =~ /woff/) {
-          $encodedData = "data:application/x-font-woff; base64, ";
+          $encodedData = "data:font/opentype; base64, ";
         } else {
-          $encodedData = "data:application/x-font-ttf; base64, ";
+          $encodedData = "data:font/truetype; base64, ";
         }
         # Undef the file record separator so we can read the whole thing 
         # in one go, save for re-assignment later
