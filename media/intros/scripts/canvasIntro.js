@@ -8,24 +8,14 @@
 function canvasApp() {
 
   /* Debugger Function */
-Debugger = function Debugger() {};
-Debugger.log = function (message) {
+  Debugger = function Debugger() {};
+  Debugger.log = function (message) {
     try {
       console.log(message); 
     } catch (e) {
       //alert(message);
     }
   };
-
-  /* GIF Encoder Variables */
-gif_time = 32;
-  var encoded = false;
-  if(typeof GIFEncoder === "function") {
-    var encoder = new GIFEncoder();
-    encoder.setRepeat(0);   //0  -> loop forever //1+ -> loop n times then stop
-    encoder.setDelay(150);  //go to next frame every n milliseconds
-    encoder.start();
-  }
 
   var rtime = function rtime() {
     var t = new Date();
@@ -325,38 +315,6 @@ gif_time = 32;
         }
       }
 
-      /* GIF Recording */
-      if (gif_time < 9) {
-        if (ftime%5 <= 1) {
-          //alert('Adding frame');
-          Debugger.log('Adding frame');
-          try {
-            encoder.addFrame(ctx);
-          } catch (e) {
-            //alert(typeof encoder.addFrame);
-          }
-        }
-      } else if ((!encoded) && (gif_time < 11)) {
-        //alert('GIF complete');
-        Debugger.log('GIF complete');
-        encoder.finish();
-        var binary_gif = encoder.stream().getData();
-        var data_url = 'data:image/gif;base64,'+encode64(binary_gif);
-        Debugger.log(data_url);
-        $('#license').after("<img src=\'"+ data_url +"\' width='768' height='432'/>");
-        window.location.hash = '#license';
-        encoded = true;
-      } else {
-        /* Reset GIF Recorder */
-        encoded = false;
-        encoder = new GIFEncoder();
-        encoder.setRepeat(0); //0  -> loop forever
-                              //1+ -> loop n times then stop
-        encoder.setDelay(150);  //go to next frame every n milliseconds
-        encoder.start();
-        gif_time = 32;
-      }
-
   } else {
     Debugger.log("DROP FRAME");
   }
@@ -364,24 +322,12 @@ gif_time = 32;
       //Debugger.log( "Frame Rate (fps): "+ ( 1000 / (ctime-ptime) ));
       ptime = ctime;
 
-      if (gif_time < 32 && (ftime%5 === 0)) {
-        gif_time +=  1;
-        Debugger.log("GIF record time is: "+ gif_time);
-      } else if (gif_time > 32) {
-        gif_time = 32;
-      }
-
       ftime += 1;
       if (ftime == 'undefined') {
         ftime = 0;
       }
        
     };
-
-  /* Record GIF function */
-  recordGIF = function recordGIF () {
-    gif_time = 0;
-  };
 
   var touchHit = function touchHit(event) {
     //Debugger.log(event.touches);

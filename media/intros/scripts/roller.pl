@@ -166,17 +166,19 @@ while (my $line = <$inputf>) {
     binmode $base64f;
     my $encodedData;
     if ($fline =~ /gif/) {
-      $encodedData = "data:image/gif; base64,  ";
+      $encodedData = "data:image/gif;charset=utf-8;base64,";
+    } elsif ($fline =~ /png/) {
+      $encodedData = "data:image/png;charset=utf-8;base64,";
     } else {
-      $encodedData = "data: ";
+      $encodedData = "data:image/jpeg;charset=utf-8;base64,";
     }
-        # Undef the file record separator so we can read the whole thing 
-        # in one go, save for re-assignment later
-        my $save_line_sep = $/;
-        undef $/;
-        my $b64line = <$base64f>;
-        $/ = $save_line_sep;
-        $encodedData = $encodedData . encode_base64($b64line);
+    # Undef the file record separator so we can read the whole thing 
+    # in one go, save for re-assignment later
+    my $save_line_sep = $/;
+    undef $/;
+    my $b64line = <$base64f>;
+    $/ = $save_line_sep;
+    $encodedData = $encodedData . encode("UTF-8", encode_base64($b64line, ''));
     $fline =~ s/$URLline/$encodedData/;
     print $fline, "\n";
     print $outputf $fline, "\n";

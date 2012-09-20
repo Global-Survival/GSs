@@ -39,13 +39,21 @@ if (typeof window.addEventListener === 'function') {
        </canvas>
     </div>
 
+    <p id="license"></p>
+
+    <a href="http://www.w3.org/2010/05/video/mediaevents.html" target="_blank">Media Help</a>
+    <a href='javascript:recordGIF();'>Record a GIF</a><br />
     <div id="stream">
       <audio id="aud1" class="standard" preload="auto">
         <source src="" type="audio/mp3" />
         <source src="" type="audio/ogg" />
       </audio>
     </div>     
-    <a href="http://www.w3.org/2010/05/video/mediaevents.html" target="_blank">Media Help</a>
+
+<script type="text/javascript" src="scripts/jsgif/LZWEncoder.js"></script>
+<script type="text/javascript" src="scripts/jsgif/NeuQuant.js"></script>
+<script type="text/javascript" src="scripts/jsgif/GIFEncoder.js"></script>
+<script type="text/javascript" src="scripts/jsgif/Demos/b64.js"></script>
 
 <!--Custom canvasApp-->
 <script type='text/javascript' src='scripts/canvasIntro.js'></script>
