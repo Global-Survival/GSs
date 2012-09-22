@@ -90,7 +90,9 @@ while (my $line = <$inputf>) {
         #print "Current working directory $ENV{PWD}\n";
         #print $outputf "Current working directory $ENV{PWD}\n";
         my $base64f;
-        if ( $URLline =~  /(\'?)(\"?)((\w|\-|\_|\/|\.)+)/s ) {
+        if ( $URLline =~ /http/s ) {
+          $resline = $resline;
+        } elsif ( $URLline =~  /(\'?)(\"?)((\w|\-|\_|\/|\.)+)/s ) {
           open $base64f, '<', $3 or die "Can't open $3: $!\n";
           lock($base64f);
           binmode $base64f;
