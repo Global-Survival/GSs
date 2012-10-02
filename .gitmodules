@@ -1,3 +1,3 @@
-[submodule "legacy/gss"]
-	path = legacy/gss
-	url = https://github.com/automenta/gss.git
+[submodule "current/netention/gss"]
+	path = current/netention/gss
+	url = https://github.com/automenta/netentionjs2
