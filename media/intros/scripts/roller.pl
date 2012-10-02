@@ -187,6 +187,39 @@ while (my $line = <$inputf>) {
     unlock($base64f);
     close($base64f);
 
+  } elsif ( ($fline =~ /(<source)/s) and ($fline =~ /(src=){1}(\'?)(\"?)((\w|\-|\_|\/|\.)+)(\'?)(\"?)/) ){
+    my $URLline = $4;
+    #print $URLline, "\n"; 
+    #print $outputf $URLline, "\n"; 
+    #print "Current working directory $ENV{PWD}\n";
+    #print $outputf "Current working directory $ENV{PWD}\n";
+    my $base64f;
+    open $base64f, '<', $URLline or die "Can't open $URLline: $!\n";
+    lock($base64f);
+    binmode $base64f;
+    my $encodedData;
+    if ($fline =~ /ogv/) {
+      $encodedData = "data:video/ogg;charset=utf-8;base64,";
+    } elsif ($fline =~ /ogg/) {
+      $encodedData = "data:audio/ogg;charset=utf-8;base64,";
+    } elsif ($fline =~ /mp4/) {
+      $encodedData = "data:video/mp4;charset=utf-8;base64,";
+    } else {
+      $encodedData = "data:audio/mpeg;charset=utf-8;base64,";
+    }
+    # Undef the file record separator so we can read the whole thing 
+    # in one go, save for re-assignment later
+    my $save_line_sep = $/;
+    undef $/;
+    my $b64line = <$base64f>;
+    $/ = $save_line_sep;
+    $encodedData = $encodedData . encode("UTF-8", encode_base64($b64line, ''));
+    $fline =~ s/$URLline/$encodedData/;
+    print $fline, "\n";
+    print $outputf $fline, "\n";
+    unlock($base64f);
+    close($base64f);
+
   } else {
     print $fline, "\n";
     print $outputf $fline, "\n";

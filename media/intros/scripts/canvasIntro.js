@@ -78,7 +78,7 @@ function canvasApp() {
         this.p = ftime;
         this.h1 = [['Global'], 
                    ['Survival','Support','Self','Safety','Satisfaction','Sufficiency','Surveillance','Sousveillance','Subsistance','Sustinance'], 
-                   ['System','Systems','Sufficiency','Society','Sanity','Spontanaeity']];
+                   ['System','Software','Systems','Sufficiency','Society','Sanity','Spontanaeity']];
         this.w = 256;
         this.h = 144;
         this.color = '#12f';
