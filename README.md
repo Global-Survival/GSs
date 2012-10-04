@@ -1,7 +1,10 @@
-Global Survival Systems 
-(as originally derived from automenta/gss) is a composite model,
+
+![GSs](http://universalsoldier.ca/images/gss.gif)
+
+Global Survival Sys 
+(as originally derived from [automenta/gss](http://github.com/automenta/gss)) is a composite model,
 made of various, independently developed applications which 
-support and rely on a common protocol (GSS) for the purpose of...
+support and rely on a [common plugin-system](http://gss.universalsoldier.ca#!topic/global-survival/Ojw4KXNzTZ4) (GSs) for the purpose of...
 
  -Calculating whether a complete manifest of needs can be satisfied by the 'available' resources -- illustrating how a community is likely to thrive or suffer.
 
@@ -28,4 +31,6 @@ Appropriateness...
 
 ...may be calculated in terms of its needs.
 
-The development of this protocol and tool suite is equivalent to a planetary constitution that can logically grant all beings equal rights to existence.
+The development of this protocol and tool suite is 
+equivalent to a planetary constitution that can logically 
+grant all beings equal rights to existence.
