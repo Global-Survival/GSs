@@ -161,7 +161,7 @@ function canvasApp() {
           this.p = ftime - this.init;
           this.h1 = arguments[3];
           this.hx = [];
-          this.hy = h - 12;
+          this.hy = h/4;
           this.f = []; 
           this.fc = '#23f';
           this.c = $("<canvas></canvas>").attr({width:w, height:h})[0].getContext('2d');
@@ -189,7 +189,7 @@ function canvasApp() {
                 var cx = this.hx[this.p]+(i*36);
                 c.font = 'bold '+ this.f[this.p] +'px Comfortaa';
                 //c.fillText(this.h1[i], cx, this.hy);
-                c.strokeText(this.h1[i], cx, this.hy);
+                c.strokeText(this.h1[i], cx, this.f[this.p]);
               }
             } else {
                 if (this.p < 92) {
