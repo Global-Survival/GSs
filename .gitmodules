@@ -1,3 +1,6 @@
 [submodule "current/netention/gss"]
 	path = current/netention/gss
 	url = https://github.com/automenta/netentionjs2
+[submodule "media/intros/scripts/jsgif"]
+	path = media/intros/scripts/jsgif
+	url = https://github.com/antimatter15/jsgif.git
