@@ -15,11 +15,7 @@ function init_page() {
   setTimeout(canvasApp,333);
 }
 (function () { 
-if (typeof window.addEventListener === 'function') {
-  window.addEventListener("load", init_page, false);
-} else {
   window.onload = init_page;
-}
 }());
 </script>
 
@@ -40,7 +36,7 @@ if (typeof window.addEventListener === 'function') {
     </div>
 
     <div id="stream">
-      <audio id="aud1" preload="auto" autoplay="true" >
+      <audio id="aud1" preload="auto" >
         <source src="audio/attention.mp3" />
         <source src="audio/attention.ogg" />
       </audio>

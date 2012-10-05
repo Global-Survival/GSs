@@ -1,6 +1,6 @@
 /* canvasIntro.js 
 *
-* This is the first demoscene intro created by GSS
+* This is the first demoscene intro created by GSs
 * Code :: Revlin John :: stylogicalmaps@gmail.com
 *
 */
@@ -16,6 +16,13 @@ function canvasApp() {
       //alert(message);
     }
   };
+
+  /* Audio: Get element, clone, insert clone into doc */
+  var audioA = document.getElementById('aud1');
+  audioA.play();
+  var audioB = audioA.cloneNode(true);
+  audioB.id = 'aud2';
+  document.getElementById('stream').appendChild(audioB);
 
   var rtime = function rtime() {
     var t = new Date();
@@ -256,6 +263,10 @@ function canvasApp() {
         if (ftime < 100) {
           ctx.globalAlpha=0.25;
         } else {
+          if ( (ftime > 196) && (ftime < 199) ) {
+            audioB.play();
+            alert("AudioB playing");
+          }
           ctx.globalAlpha=1.0;
           ctx.clearRect(0,0,w,h);
         }
