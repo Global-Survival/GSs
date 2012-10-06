@@ -5,9 +5,7 @@
 *
 */
 
-function canvasApp() {
-
-  /* Debugger Function */
+/* Debugger Function */
   Debugger = function Debugger() {};
   Debugger.log = function (message) {
     try {
@@ -17,17 +15,84 @@ function canvasApp() {
     }
   };
 
-  /* Audio: Get element, clone, insert clone into doc */
-  var audioA = document.getElementById('aud1');
-  audioA.play();
-  var audioB = audioA.cloneNode(true);
-  audioB.id = 'aud2';
-  document.getElementById('stream').appendChild(audioB);
-
+  /* Get time in milliseconds */
   var rtime = function rtime() {
     var t = new Date();
     return t.getTime();
   };
+
+
+  /* Audio Tracker: */
+  var atrack = {
+    A : {},
+    B : {},
+    rtime : rtime,
+    stime : 0,
+    looptime : (14.6999999999999 * 1000),
+    play : atPlayer
+  };
+
+  /* Audio Tracker play function */
+  function atPlayer() {
+
+    /* Get element, clone, insert clone into doc */
+    if (typeof this.A.id === 'undefined') {
+      this.A = document.getElementById('aud1');
+      this.B = this.A.cloneNode(true);
+      this.B.id = 'aud2';
+      document.getElementById('stream').appendChild(this.B); 
+      this.A.addEventListener('ended', function(){ 
+        this.currentTime = 0;
+        this.pause();
+      }, false);
+      this.B.addEventListener('ended', function(){ 
+        this.currentTime = 0;
+        this.pause();
+      }, false);
+    }
+
+    if (typeof this.atime === 'undefined' && this.A.readyState > 1 && this.B.readyState > 1) {
+      this.atime = this.rtime;
+      this.stime = this.atime();
+      this.A.currentTime = 0.1;
+      this.B.currentTime = 0.1;
+
+      this.play = function() {
+        var sp = atrack.atime() - atrack.stime; 
+        var A = atrack.A;
+        var B = atrack.B;
+        var lp = atrack.looptime;
+        if (B.currentTime === 0) B.pause();
+        if (A.currentTime === 0) A.pause();
+        if (A.paused === true) {
+          Debugger.log('B time: '+ B.currentTime +' : '+ sp);
+          if ( sp > lp ) {
+            B.currentTime = 0.01;
+            A.currentTime = 0.01;
+            A.play();
+            atrack.stime = atrack.atime();
+            B.pause();
+          }
+        } else {
+          Debugger.log('A time: '+ A.currentTime +' : '+ sp);
+          if ( sp > lp ){
+            A.currentTime = 0.01;
+            B.currentTime = 0.01;
+            B.play(); 
+            atrack.stime = atrack.atime();
+            A.pause();
+          }
+        }
+      };
+
+      setTimeout(this.A.play(), 33);
+      aplayLoop = setInterval(this.play, 33);
+      Debugger.log('Atrack playing');
+    } else Debugger.log('readyState is '+ this.B.readyState);
+  };
+
+
+var canvasApp = function canvasApp() {
 
   var frate=66,
          fdelay=frate*2, 
@@ -231,7 +296,7 @@ function canvasApp() {
 
   /* Define second Title Screen */
   var t2 = [];
-
+  
   /* Draw main function */
   var draw = function draw(ctx,w,h) {
     /* Timing and Frame drops */
@@ -263,10 +328,6 @@ function canvasApp() {
         if (ftime < 100) {
           ctx.globalAlpha=0.25;
         } else {
-          if ( (ftime > 196) && (ftime < 199) ) {
-            audioB.play();
-            alert("AudioB playing");
-          }
           ctx.globalAlpha=1.0;
           ctx.clearRect(0,0,w,h);
         }
@@ -320,25 +381,30 @@ function canvasApp() {
             window.location.replace("http://netention.org");
           });
         } else {
-          cv.mousedown(function(e) {
+          cv.bind('mousedown', function(e) {
             window.location.replace("http://netention.org");  
           });
         }
       }
 
-  } else {
-    Debugger.log("DROP FRAME");
-  }
-      /* STOP: Drop frames */
-      //Debugger.log( "Frame Rate (fps): "+ ( 1000 / (ctime-ptime) ));
-      ptime = ctime;
+    } else {
+      Debugger.log("DROP FRAME");
+    }
+    /* STOP: Drop frames */
+    //Debugger.log( "Frame Rate (fps): "+ ( 1000 / (ctime-ptime) ));
+    ptime = ctime;
 
-      ftime += 1;
-      if (ftime == 'undefined') {
-        ftime = 0;
-      }
+    ftime += 1;
+    if (ftime == 'undefined') {
+      ftime = 0;
+    }
+    
+    /* Check audio state */
+   if (typeof atrack.atime === 'undefined') {  
+     atrack.play();
+   }
        
-    };
+  };
 
   var touchHit = function touchHit(event) {
     //Debugger.log(event.touches);
@@ -356,50 +422,8 @@ function canvasApp() {
     mouse_y = (event.clientY - cv_pos.top + doc.scrollTop()) * cv_h;
     Debugger.log('mouse coords captured');
   }
-  if ('ontouchmove' in document.createElement('div'))  {
-    /*win.bind('touchstart', fu  nction(e){
-      e.preventDefault();
-    });
-    win.bind('touchmove', function(e){
-      e.preventDefault();
-    });
-    win.bind('touchend', function(e){
-      e.preventDefault();
-    });*/
-    cv.bind('touchstart', function(e){
-      Debugger.log('MouseDown');
-      mouse_down = true;
-      mouse_up = false;
-      touchHit(e.originalEvent);
-      e.preventDefault();
-    });
-    cv.bind('touchmove', function(e){
-      touchHit(e.originalEvent);
-      e.preventDefault();
-    });
-    cv.bind('touchend', function(e){ 
-      Debugger.log('MouseUp');
-      mouse_down = false;
-      mouse_up = true;
-      e.preventDefault();
-    });
-    Debugger.log('touch is present');
-  } else {
-    cv.mousedown(function(e) {
-      Debugger.log('MouseDown');
-      mouse_down = true;
-      mouse_up = false;
-      mouseHit(e);  
-    });
-    cv.mousemove(mouseHit);
-    cv.mouseup(function (e) { 
-       Debugger.log('MouseUp');
-       mouse_down = false;
-       mouse_up = true; 
-    });
-  }
 
-  /* Initialize draw loop */
+  /* Initialize loops */
   try {
     /* Display initial time props */
     //ptime = rtime();
@@ -410,5 +434,4 @@ function canvasApp() {
     Debugger.log('drawLoop failed to start'); 
   }  
 
-}
-
+};
