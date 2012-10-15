@@ -32,6 +32,6 @@
 
 ### ...may be calculated in terms of its needs.
 
-## The development of this protocol and tool suite is equivalent to 
-## a planetary constitution that can logically grant all beings 
-## equal rights to existence.
+### The development of this protocol and tool suite is equivalent to 
+### a planetary constitution that can logically grant all beings 
+### equal rights to existence.
