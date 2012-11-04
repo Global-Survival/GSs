@@ -4,3 +4,6 @@
 [submodule "current/netention/gss2"]
 	path = current/netention/gss2
 	url = git://github.com/automenta/netentionjs2.git
+[submodule "media/intros"]
+	path = media/intros
+	url = git@github.com:Revlin/gss-intros.git
