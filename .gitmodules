@@ -7,3 +7,6 @@
 [submodule "media/intros"]
 	path = media/intros
 	url = git@github.com:Revlin/gss-intros.git
+[submodule "current/netention/gss2-js-heroku"]
+	path = current/netention/gss2-js-heroku
+	url = git@github.com:Revlin/gss-netentionjs-heroku.git
