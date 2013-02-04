@@ -3,7 +3,7 @@
 	url = https://github.com/automenta/netentionjs.git
 [submodule "current/netention/gss2-js-automenta"]
 	path = current/netention/gss2-js-automenta
-	url = git@github.com:automenta/netentionjs2.git
+	url = git@github.com:Revlin/gss-netentionjs-automenta.git
 [submodule "current/netention/gss2-js-heroku"]
 	path = current/netention/gss2-js-heroku
 	url = git@github.com:Revlin/gss-netentionjs-heroku.git
