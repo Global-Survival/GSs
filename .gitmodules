@@ -1,12 +1,3 @@
-[submodule "current/netention/netentionjs"]
-	path = current/netention/netentionjs
-	url = https://github.com/automenta/netentionjs.git
-[submodule "current/netention/gss2-js-automenta"]
-	path = current/netention/gss2-js-automenta
-	url = git@github.com:Revlin/gss-netentionjs-automenta.git
-[submodule "current/netention/gss2-js-heroku"]
-	path = current/netention/gss2-js-heroku
-	url = git@github.com:Revlin/gss-netentionjs-heroku.git
 [submodule "media/intros"]
 	path = media/intros
 	url = git@github.com:Revlin/gss-intros.git
