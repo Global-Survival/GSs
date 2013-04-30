@@ -1,3 +1,6 @@
 [submodule "media/intros"]
 	path = media/intros
 	url = git@github.com:Revlin/gss-intros.git
+[submodule "legacy/netention"]
+	path = legacy/netention
+	url = git@github.com:automenta/netention.git
