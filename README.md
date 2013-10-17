@@ -1,7 +1,6 @@
-
 ![GSs](http://universalsoldier.ca/images/gss.gif)
 
-# Global Survival Sys 
+# Global Survival synonymous
 ### (as originally derived from [automenta/gss](http://github.com/automenta/gss)) is a composite model,
 ### made of various, independently developed applications which 
 ### support and rely on a common [indicator plugin-system](http://gss.universalsoldier.ca#!topic/global-survival/Ojw4KXNzTZ4) (GSs) 
