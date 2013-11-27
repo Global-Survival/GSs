@@ -1,4 +1,6 @@
-![GSs](http://universalsoldier.ca/images/gss.gif)
+[![Creative Commons Licence](http://i.creativecommons.org/l/by-sa/3.0/nz/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/nz/deed.en_GB) 
+
+*GSs is licensed under [Creative Commons Attribution-ShareAlike 3.0](http://creativecommons.org/licenses/by-sa/3.0/).*
 
 # Global Survival synonymous
 ### (as originally derived from [automenta/gss](http://github.com/automenta/gss)) is a composite model,
