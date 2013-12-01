@@ -5,7 +5,7 @@
 # Global Survival synonymous
 ### (as originally derived from [automenta/gss](http://github.com/automenta/gss)) is a composite model,
 ### made of various, independently developed applications which 
-### support and rely on a common [indicator plugin-system](http://gss.universalsoldier.ca#!topic/global-survival/Ojw4KXNzTZ4) (GSs) 
+### support and rely on a common [indicator plugin-system](http://groups.google.com/forum/#!topic/global-survival/Ojw4KXNzTZ4) (GSs) 
 ### for the purpose of...
 
  * Calculating whether a complete manifest of needs can be satisfied by the 'available' resources -- illustrating how a community is likely to thrive or suffer.
