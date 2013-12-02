@@ -6,7 +6,7 @@
 	url = git@github.com:automenta/netention.git
 [submodule "current/netentionjs2"]
 	path = current/netentionjs2
-	url = git@github.com:automenta/netentionjs2.git
+	url = git@github.com:Global-Survival/netentionjs.git
 [submodule "current/uni-sol"]
 	path = current/uni-sol
 	url = git@github.com:Revlin/uni-sol.git
