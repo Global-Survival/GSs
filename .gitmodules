@@ -7,3 +7,9 @@
 [submodule "current/netentionjs"]
 	path = current/netentionjs
 	url = git@github.com:Global-Survival/netentionjs.git
+[submodule "current/climateviewer"]
+	path = current/climateviewer
+	url = git@github.com:rezn8d/ClimateViewer-4D.git
+[submodule "current/curiosume"]
+	path = current/curiosume
+	url = git@github.com:Global-Survival/curiosume.git
