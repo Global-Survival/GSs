@@ -13,3 +13,6 @@
 [submodule "current/curiosume"]
 	path = current/curiosume
 	url = git@github.com:Global-Survival/curiosume.git
+[submodule "current/can-network"]
+	path = current/can-network
+	url = git@github.com:Global-Survival/can-network.git
