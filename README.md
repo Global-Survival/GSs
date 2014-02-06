@@ -1,6 +1,6 @@
 [![Creative Commons Licence](http://i.creativecommons.org/l/by-sa/3.0/nz/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/nz/deed.en_GB) 
 
-*GSs is licensed under [Creative Commons Attribution-ShareAlike 3.0](http://creativecommons.org/licenses/by-sa/3.0/) and further licensed under [GNU/GPL version 3](LICENSE.txt)*
+*GSs is licensed under [Creative Commons Attribution-ShareAlike 3.0](http://creativecommons.org/licenses/by-sa/3.0/) and further licensed under [GNU/GPL v3](LICENSE.txt)*
 
 # Global Survival synonymous
 ### (as originally derived from [automenta/gss](http://github.com/automenta/gss)) is a composite model,
