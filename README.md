@@ -1,6 +1,6 @@
 [![Creative Commons Licence](http://i.creativecommons.org/l/by-sa/3.0/nz/88x31.png)](http://creativecommons.org/licenses/by-sa/3.0/nz/deed.en_GB) 
 
-*GSs is licensed under [Creative Commons Attribution-ShareAlike 3.0](http://creativecommons.org/licenses/by-sa/3.0/).*
+*GSs is licensed under [Creative Commons Attribution-ShareAlike 3.0](http://creativecommons.org/licenses/by-sa/3.0/) and further licensed under GNU/GPL version 3*
 
 # Global Survival synonymous
 ### (as originally derived from [automenta/gss](http://github.com/automenta/gss)) is a composite model,
@@ -36,3 +36,5 @@
 ### The development of this protocol and tool suite is equivalent to 
 ### a planetary constitution that can logically grant all beings 
 ### equal rights to existence.
+
+*For an introduction to our flagship software package, Netention, [please view this presentation ](http://www.slideshare.net/helenefinidori/introduction-to-netention)*
