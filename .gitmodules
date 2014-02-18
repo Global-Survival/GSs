@@ -16,3 +16,6 @@
 [submodule "current/can-network"]
 	path = current/can-network
 	url = git@github.com:Global-Survival/can-network.git
+[submodule "current/uni-sol"]
+	path = current/uni-sol
+	url = git@github.com:uni-sol/uni-sol.git
