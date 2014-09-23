@@ -19,3 +19,6 @@
 [submodule "current/uni-sol"]
 	path = current/uni-sol
 	url = git@github.com:uni-sol/uni-sol.git
+[submodule "current/opennars"]
+	path = current/opennars
+	url = git@github.com:opennars/opennars.git
