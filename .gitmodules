@@ -1,9 +1,3 @@
-[submodule "legacy/netention"]
-	path = legacy/netention
-	url = git@github.com:automenta/netention.git
-[submodule "media/intros"]
-	path = media/intros
-	url = git@github.com:Global-Survival/gss-intros.git
 [submodule "current/netentionjs"]
 	path = current/netentionjs
 	url = git@github.com:Global-Survival/netentionjs.git
@@ -16,9 +10,15 @@
 [submodule "current/can-network"]
 	path = current/can-network
 	url = git@github.com:Global-Survival/can-network.git
-[submodule "current/uni-sol"]
-	path = current/uni-sol
-	url = git@github.com:uni-sol/uni-sol.git
+[submodule "current/global-survival"]
+	path = current/global-survival
+	url = git@github.com:Global-Survival/global-survival.git
 [submodule "current/opennars"]
 	path = current/opennars
 	url = git@github.com:opennars/opennars.git
+[submodule "legacy/netention"]
+	path = legacy/netention
+	url = git@github.com:automenta/netention.git
+[submodule "media/intros"]
+	path = media/intros
+	url = git@github.com:Global-Survival/gss-intros.git
