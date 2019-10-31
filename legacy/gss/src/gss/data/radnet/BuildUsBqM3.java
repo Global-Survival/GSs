@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import gss.geo.LocationsCache;
 import gss.geo.Located;
-import gss.data.radnet.BuildUSBqM3;
 
 /**
  *
@@ -27,7 +26,7 @@ public class BuildUsBqM3 {
     //Rate is in Murders per 100,000 people
     
     LocationsCache geo = new LocationsCache();
-    private static final Logger logger = Logger.getLogger(BuildUSBqM3.class.toString());
+    private static final Logger logger = Logger.getLogger(BuildUsBqM3.class.toString());
 
     class Reading {
         public double lat, lng;
