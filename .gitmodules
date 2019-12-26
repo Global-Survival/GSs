@@ -19,3 +19,6 @@
 [submodule "media/intros"]
 	path = media/intros
 	url = git@github.com:Global-Survival/gss-intros.git
+[submodule "current/dunescape3d"]
+	path = current/dunescape3d
+	url = git@bitbucket.org:Real-Currents/dunescape3d.git
