@@ -1,17 +1,23 @@
-[submodule "current/climateviewer"]
-	path = current/climateviewer
+[submodule "currents/climateviewer"]
+	path = currents/climateviewer
 	url = git@github.com:rezn8d/ClimateViewer-4D.git
-[submodule "current/curiosume"]
-	path = current/curiosume
+[submodule "currents/curiosume"]
+	path = currents/curiosume
 	url = git@github.com:Global-Survival/curiosume.git
-[submodule "current/can-network"]
-	path = current/can-network
+[submodule "currents/can-network"]
+	path = currents/can-network
 	url = git@github.com:Global-Survival/can-network.git
-[submodule "current/global-survival"]
-	path = current/global-survival
+[submodule "currents/dunescape3d"]
+	path = currents/dunescape3d
+	url = git@bitbucket.org:Real-Currents/dunescape3d.git
+[submodule "currents/global-survival"]
+	path = currents/global-survival
 	url = git@github.com:Global-Survival/global-survival.git
-[submodule "current/opennars"]
-	path = current/opennars
+[submodule "currents/netmj"]
+	path = currents/netmj
+	url = git@github.com:Real-Currents/netmj.git
+[submodule "currents/opennars"]
+	path = currents/opennars
 	url = git@github.com:opennars/opennars.git
 [submodule "legacy/netention"]
 	path = legacy/netention
@@ -19,9 +25,3 @@
 [submodule "media/intros"]
 	path = media/intros
 	url = git@github.com:Global-Survival/gss-intros.git
-[submodule "current/dunescape3d"]
-	path = current/dunescape3d
-	url = git@bitbucket.org:Real-Currents/dunescape3d.git
-[submodule "current/netmj"]
-	path = current/netmj
-	url = git@github.com:Real-Currents/netmj.git
